@@ -27,6 +27,12 @@ class BlackjackGame {
         deck.shuffle()
     }
 
+    fun startNewHand() {
+        reset()
+        dealCard()
+        dealCard()
+    }
+
     fun dealCard(): String {
         if (deck.isEmpty()) reset()
         val card = deck.removeAt(Random.nextInt(deck.size))
@@ -43,10 +49,7 @@ class BlackjackGame {
         for (card in hand) {
             val rank = card.dropLast(1) // remove suit
             total += when (rank) {
-                "A" -> {
-                    aces++
-                    11
-                }
+                "A" -> { aces++; 11 }
                 "K", "Q", "J" -> 10
                 else -> rank.toInt()
             }

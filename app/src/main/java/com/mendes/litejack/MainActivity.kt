@@ -16,32 +16,37 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupUI()
+
+        game.startNewHand()
+        updateHandUI()
+    }
+
+    private fun updateHandUI() {
+        val hand = game.getHand().joinToString(", ")
+        val total = game.calculateHand()
+
+        val displayText = if (total > 21) {
+            "Your hand: $hand\nTotal: $total\nBusted!"
+        } else {
+            "Your hand: $hand\nTotal: $total"
+        }
+
+        binding.tvCards.text = displayText
     }
 
     private fun setupUI() {
         binding.btnDeal.setOnClickListener {
-            dealCard()
+            if (game.getHand().isEmpty()) {
+                game.startNewHand()
+            } else {
+                game.dealCard()
+            }
+            updateHandUI()
         }
 
         binding.btnReset.setOnClickListener {
-            resetGame()
+            game.startNewHand()
+            updateHandUI()
         }
-    }
-
-    private fun dealCard() {
-        val card = game.dealCard()
-        val hand = game.getHand().joinToString(", ")
-        val total = game.calculateHand()
-
-        binding.tvCards.text = "Your hand: $hand\nTotal: $total"
-
-        if (total > 21) {
-            binding.tvCards.append("Busted!")
-        }
-    }
-
-    private fun resetGame() {
-        game.reset()
-        binding.tvCards.text = "Game reset. Press Deal to start!"
     }
 }
