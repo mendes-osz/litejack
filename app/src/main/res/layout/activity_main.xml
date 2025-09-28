@@ -6,23 +6,65 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/tvCards"
+        android:id="@+id/tvDealer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hand"
+        android:text="Dealer hand"
         android:textSize="18sp"
         android:padding="8dp" />
 
-    <Button
-        android:id="@+id/btnDeal"
+    <TextView
+        android:id="@+id/tvCards"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Deal Card" />
+        android:text="Your hand"
+        android:textSize="18sp"
+        android:padding="8dp" />
 
-    <Button
-        android:id="@+id/btnReset"
+    <TextView
+        android:id="@+id/tvResult"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Reset Game"
-        android:layout_marginTop="16dp" />
+        android:text=""
+        android:textSize="18sp"
+        android:padding="8dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="16dp">
+
+        <Button
+            android:id="@+id/btnDeal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Deal" />
+
+        <Button
+            android:id="@+id/btnHit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hit"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp" />
+
+        <Button
+            android:id="@+id/btnStand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stand"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp" />
+
+        <Button
+            android:id="@+id/btnReset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reset"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp" />
+    </LinearLayout>
+
 </LinearLayout>

@@ -1,65 +1,55 @@
 package com.mendes.litejack
 
-import kotlin.random.Random
+import com.mendes.litejack.model.Dealer
+import com.mendes.litejack.model.Deck
+import com.mendes.litejack.model.Player
+import com.mendes.litejack.model.Card
 
 class BlackjackGame {
 
-    private val deck = mutableListOf<String>()
-    private val hand = mutableListOf<String>()
-
-    init {
-        reset()
-    }
-
-    fun reset() {
-        deck.clear()
-        hand.clear()
-
-        val suits = listOf("♠", "♥", "♦", "♣")
-        val ranks = listOf("A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K")
-
-        for (suit in suits) {
-            for (rank in ranks) {
-                deck.add("$rank$suit")
-            }
-        }
-
-        deck.shuffle()
-    }
+    private val deck = Deck()
+    val player = Player()
+    val dealer = Dealer()
 
     fun startNewHand() {
-        reset()
-        dealCard()
-        dealCard()
+        player.resetHand()
+        dealer.resetHand()
+        deck.reset()
+
+        repeat(2) { player.receiveCard(deck.drawCard()) }
+        repeat(2) { dealer.receiveCard(deck.drawCard()) }
     }
 
-    fun dealCard(): String {
-        if (deck.isEmpty()) reset()
-        val card = deck.removeAt(Random.nextInt(deck.size))
-        hand.add(card)
-        return card
+    fun playerHit() {
+        player.receiveCard(deck.drawCard())
     }
 
-    fun getHand(): List<String> = hand.toList()
+    fun dealerTurn() {
+        dealer.playTurn(deck)
+    }
 
-    fun calculateHand(): Int {
-        var total = 0
-        var aces = 0
+    fun getPlayerHand(): List<Card> = player.getHand()
+    fun getDealerHand(): List<Card> = dealer.getHand()
 
-        for (card in hand) {
-            val rank = card.dropLast(1) // remove suit
-            total += when (rank) {
-                "A" -> { aces++; 11 }
-                "K", "Q", "J" -> 10
-                else -> rank.toInt()
-            }
+    fun calculatePlayerHand(): Int = player.calculateHandValue()
+    fun calculateDealerHand(): Int = dealer.calculateHandValue()
+
+    fun resetGame() {
+        player.resetHand()
+        dealer.resetHand()
+        deck.reset()
+    }
+
+    fun checkWinner(): String {
+        val playerTotal = calculatePlayerHand()
+        val dealerTotal = calculateDealerHand()
+
+        return when {
+            playerTotal > 21 -> "dealer"
+            dealerTotal > 21 -> "player"
+            playerTotal > dealerTotal -> "player"
+            dealerTotal > playerTotal -> "dealer"
+            else -> "push" // tie
         }
-
-        while (total > 21 && aces > 0) {
-            total -= 10
-            aces--
-        }
-
-        return total
     }
 }

@@ -16,37 +16,65 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupUI()
-
-        game.startNewHand()
-        updateHandUI()
     }
 
-    private fun updateHandUI() {
-        val hand = game.getHand().joinToString(", ")
-        val total = game.calculateHand()
+    private fun updatePlayerUI() {
+        val hand = game.getPlayerHand().joinToString(", ") { it.toString() }
+        val total = game.calculatePlayerHand()
 
-        val displayText = if (total > 21) {
-            "Your hand: $hand\nTotal: $total\nBusted!"
+        binding.tvCards.text = "Your hand: $hand\nTotal: $total"
+
+        if (total > 21) {
+            binding.tvCards.append("\nBusted!")
+        }
+    }
+
+    private fun updateDealerUI(showAll: Boolean = false) {
+        val dealerHand = game.getDealerHand()
+        val display = if (showAll) {
+            dealerHand.joinToString(", ") { it.toString() }
         } else {
-            "Your hand: $hand\nTotal: $total"
+            "${dealerHand.first()} + [Hidden]"
         }
 
-        binding.tvCards.text = displayText
+        val total = if (showAll) game.calculateDealerHand() else "?"
+        binding.tvDealer.text = "Dealer's hand: $display\nTotal: $total"
     }
 
     private fun setupUI() {
         binding.btnDeal.setOnClickListener {
-            if (game.getHand().isEmpty()) {
-                game.startNewHand()
-            } else {
-                game.dealCard()
+            game.startNewHand()
+            updatePlayerUI()
+            updateDealerUI()
+        }
+
+        binding.btnHit.setOnClickListener {
+            game.playerHit()
+            updatePlayerUI()
+
+            if (game.calculatePlayerHand() > 21) {
+                game.dealerTurn()
+                updateDealerUI(showAll = true)
             }
-            updateHandUI()
+        }
+
+        binding.btnStand.setOnClickListener {
+            game.dealerTurn()
+            updateDealerUI(showAll = true)
+
+            val winner = game.checkWinner()
+            binding.tvResult.text = when (winner) {
+                "player" -> "You win!"
+                "dealer" -> "Dealer wins!"
+                else -> "Push (tie)"
+            }
         }
 
         binding.btnReset.setOnClickListener {
-            game.startNewHand()
-            updateHandUI()
+            game.resetGame()
+            binding.tvCards.text = "Game reset. Press Deal to start!"
+            binding.tvDealer.text = ""
+            binding.tvResult.text = ""
         }
     }
 }
